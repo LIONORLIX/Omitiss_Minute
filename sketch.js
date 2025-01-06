@@ -8,8 +8,11 @@ let marginSize = 50;
 
 function setup() {
 
-  let canvas = createCanvas(coreSize+marginSize*2, coreSize+marginSize*2);
+  let canvas = createCanvas(coreSize+marginSize*2, coreSize+marginSize*2, P2D);
   canvas.parent('canvas-container');
+  smooth();
+  frameRate(60);
+  noiseDetail(4, 0.2)
   angleMode(DEGREES);
 
   gridSize = coreSize/24;
@@ -60,13 +63,13 @@ function drawHouse(){
 function drawHour(hour){
   fill(255);
   stroke(0);
-  ellipse(centerPosX+cos(hour*6-90)*timeRadius, centerPosY+sin(hour*6-90)*timeRadius, minRadius*2);
+  ellipse(centerPosX+cos(hour*30-90)*timeRadius, centerPosY+sin(hour*30-90)*timeRadius, minRadius*2);
 }
 
 function drawMin(min){
   fill(255);
   stroke(0);
-  rect(centerPosX+cos(min*30-90)*timeRadius-hourLength/2, centerPosY+sin(min*30-90)*timeRadius-hourLength/2, hourLength, hourLength);
+  rect(centerPosX+cos(min*6-90)*timeRadius-hourLength/2, centerPosY+sin(min*6-90)*timeRadius-hourLength/2, hourLength, hourLength);
 }
 
 function drawScale(){
