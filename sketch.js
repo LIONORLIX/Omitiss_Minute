@@ -60,13 +60,13 @@ function drawHouse(){
 function drawHour(hour){
   fill(255);
   stroke(0);
-  rect(centerPosX+cos(hour*30-90)*timeRadius-hourLength/2, centerPosY+sin(hour*30-90)*timeRadius-hourLength/2, hourLength, hourLength);
+  ellipse(centerPosX+cos(hour*6-90)*timeRadius, centerPosY+sin(hour*6-90)*timeRadius, minRadius*2);
 }
 
 function drawMin(min){
   fill(255);
   stroke(0);
-  ellipse(centerPosX+cos(min*6-90)*timeRadius, centerPosY+sin(min*6-90)*timeRadius, minRadius*2);
+  rect(centerPosX+cos(min*30-90)*timeRadius-hourLength/2, centerPosY+sin(min*30-90)*timeRadius-hourLength/2, hourLength, hourLength);
 }
 
 function drawScale(){
@@ -89,6 +89,6 @@ function draw() {
   drawHouse();
   drawScale();
   drawSec(getLocalTime().sec)
-  drawHour(getLocalTime().hour);
   drawMin(getLocalTime().min);
+  drawHour(getLocalTime().hour);
 }
