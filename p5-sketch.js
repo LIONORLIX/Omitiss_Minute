@@ -7,12 +7,13 @@ let coreSize = 400;
 let marginSize = 50;
 
 function setup() {
-
+  
   let canvas = createCanvas(coreSize+marginSize*2, coreSize+marginSize*2, P2D);
+  // setAttributes('antialias', true)
+  pixelDensity(8);
   canvas.parent('canvas-container');
   smooth();
   frameRate(60);
-  noiseDetail(4, 0.2)
   angleMode(DEGREES);
 
   gridSize = coreSize/24;
@@ -74,7 +75,7 @@ function drawMin(min){
 
 function drawScale(){
   stroke(255);
-  strokeWeight(0.5);
+  strokeWeight(1);
   let innerRadius = gridSize*5.4
   let outerRadius = gridSize*5.8
   for (let i=0; i<60; i++){
@@ -84,6 +85,7 @@ function drawScale(){
 
 function drawSec(sec){
   stroke(255);
+  strokeWeight(1);
   line(centerPosX,centerPosY,centerPosX+cos(sec*6-90)*coreSize,centerPosY+sin(sec*6-90)*coreSize);
 }
 
