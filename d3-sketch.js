@@ -1,5 +1,5 @@
 // 设置画布大小
-const coreSize = 400;
+const coreSize = 600;
 const marginSize = 50;
 const width = coreSize + marginSize * 2;
 const height = coreSize + marginSize * 2;
@@ -21,8 +21,25 @@ const svg = d3
   .attr("height", height)
   // .style("background", "#fff");
 
+const houseLayer = svg.append("g").attr("class", "house-layer");
+const scalesLayer = svg.append("g").attr("class", "scales-layer");
+const secondLayer = svg.append("g").attr("class", "second-layer");
+const minuteLayer = svg.append("g").attr("class", "minute-layer");
+const hourLayer = svg.append("g").attr("class", "hour-layer");
+
+function getTime(){
+  const now = new Date();
+  const hour = now.getHours() + now.getMinutes() / 60;
+  const minute = now.getMinutes() + now.getSeconds() / 60;
+  const second = now.getSeconds() + now.getMilliseconds() / 1000;
+  
+  return { hour: hour, minute: minute, second: second };
+}
+
 // 绘制房屋形状
-svg
+function drawHouse(){
+  houseLayer.selectAll("*").remove(); // 清理旧元素
+  houseLayer
   .append("polygon")
   .attr("points", [
     [marginSize + gridSize * 12, marginSize + gridSize * 1],
@@ -33,36 +50,35 @@ svg
   ])
   .attr("fill", "black")
   .attr("stroke", "white");
-
-// 绘制刻度
-for (let i = 0; i < 60; i++) {
-  const angle = i * 6 - 90;
-  const x1 = centerPosX + Math.cos((angle * Math.PI) / 180) * innerRadius;
-  const y1 = centerPosY + Math.sin((angle * Math.PI) / 180) * innerRadius;
-  const x2 = centerPosX + Math.cos((angle * Math.PI) / 180) * outerRadius;
-  const y2 = centerPosY + Math.sin((angle * Math.PI) / 180) * outerRadius;
-
-  svg
-    .append("line")
-    .attr("x1", x1)
-    .attr("y1", y1)
-    .attr("x2", x2)
-    .attr("y2", y2)
-    .attr("stroke", "white")
-    .attr("stroke-width", 1);
 }
 
-// 绘制动态更新函数
-function updateClock() {
-  const now = new Date();
-  const hour = now.getHours() + now.getMinutes() / 60;
-  const minute = now.getMinutes() + now.getSeconds() / 60;
-  const second = now.getSeconds() + now.getMilliseconds() / 1000;
+// 绘制刻度
+function drawScales(){
+  scalesLayer.selectAll("*").remove();
+  for (let i = 0; i < 60; i++) {
+    const angle = i * 6 - 90;
+    const x1 = centerPosX + Math.cos((angle * Math.PI) / 180) * innerRadius;
+    const y1 = centerPosY + Math.sin((angle * Math.PI) / 180) * innerRadius;
+    const x2 = centerPosX + Math.cos((angle * Math.PI) / 180) * outerRadius;
+    const y2 = centerPosY + Math.sin((angle * Math.PI) / 180) * outerRadius;
+  
+    scalesLayer
+      .append("line")
+      .attr("x1", x1)
+      .attr("y1", y1)
+      .attr("x2", x2)
+      .attr("y2", y2)
+      .attr("stroke", "white")
+      .attr("stroke-width", 0.5);
+  }
+}
 
+function drawSecond(){
+  secondLayer.selectAll("*").remove();
   // 秒针
-  svg
+  secondLayer
     .selectAll(".second-hand")
-    .data([second])
+    .data([getTime().second])
     .join("line")
     .attr("class", "second-hand")
     .attr("x1", centerPosX)
@@ -74,12 +90,15 @@ function updateClock() {
       centerPosY + Math.sin((d * 6 - 90) * (Math.PI / 180)) * coreSize
     )
     .attr("stroke", "white")
-    .attr("stroke-width", 1);
+    .attr("stroke-width", 0.5);
+}
 
+function drawMinute(){
   // 分针
-  svg
+  minuteLayer.selectAll("*").remove();
+  minuteLayer
     .selectAll(".minute-hand")
-    .data([minute])
+    .data([getTime().minute])
     .join("rect")
     .attr("class", "minute-hand")
     .attr("width", hourLength)
@@ -95,12 +114,35 @@ function updateClock() {
       hourLength / 2
     )
     .attr("fill", "white")
-    .attr("stroke", "black");
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5);
 
+  minuteLayer
+    .selectAll(".minute-text")
+    .data([getTime().minute])
+    .join("text")
+    .attr("class", "minute-text")
+    .attr("x", (d) =>
+      centerPosX +
+      Math.cos((d * 6 - 90) * (Math.PI / 180)) * timeRadius
+    )
+    .attr("y", (d) =>
+      centerPosY +
+      Math.sin((d * 6 - 90) * (Math.PI / 180)) * timeRadius
+    )
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "central")
+    .attr("font-size", "20px")
+    .attr("fill", "black")
+    .text(d => Math.floor(d));
+}
+
+function drawHour(){
   // 时针
-  svg
+  hourLayer.selectAll("*").remove();
+  hourLayer
     .selectAll(".hour-hand")
-    .data([hour])
+    .data([getTime().hour])
     .join("circle")
     .attr("class", "hour-hand")
     .attr("cx", (d) =>
@@ -111,9 +153,45 @@ function updateClock() {
     )
     .attr("r", minRadius)
     .attr("fill", "white")
-    .attr("stroke", "black");
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5);
+    
+  hourLayer
+    .selectAll(".hour-text")
+    .data([getTime().hour])
+    .join("text")
+    .attr("class", "hour-text")
+    .attr("x", (d) =>
+      centerPosX + Math.cos((d * 30 - 90) * (Math.PI / 180)) * timeRadius
+    )
+    .attr("y", (d) =>
+      centerPosY + Math.sin((d * 30 - 90) * (Math.PI / 180)) * timeRadius
+    )
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "central")
+    .attr("font-size", "20px")
+    .attr("fill", "black")
+    .text(d => 
+      { 
+        if(Math.floor(d)>12){
+          return Math.floor(d)-12
+        }else{
+          return Math.floor(d)
+        }
+      }
+    ); // 显示小时数字
+}
+
+
+// 绘制动态更新函数
+function updateClock() {
+  drawHouse()
+  drawScales()
+  drawSecond()
+  drawMinute()
+  drawHour()
 }
 
 // 启动动画
-d3.interval(updateClock, 1);
+d3.interval(updateClock, 10);
 updateClock();

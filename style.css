@@ -11,6 +11,20 @@ html, body {
   height: 100vh;
 }
 
+.hour-text {
+  font-family: "Reddit Sans Condensed", serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.minute-text {
+  font-family: "Reddit Sans Condensed", serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
 canvas {
   display: block;
 }
