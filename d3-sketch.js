@@ -169,7 +169,9 @@ function drawHour(){
       .attr("fill", "black")
       .text(d => 
         { 
-          if(Math.floor(d)>12){
+          if(Math.floor(d)==0){
+            return 12
+          }else if(Math.floor(d)>12){
             return Math.floor(d)-12
           }else{
             return Math.floor(d)
