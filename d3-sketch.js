@@ -27,15 +27,6 @@ const secondLayer = svg.append("g").attr("class", "second-layer");
 const minuteLayer = svg.append("g").attr("class", "minute-layer");
 const hourLayer = svg.append("g").attr("class", "hour-layer");
 
-function getTime(){
-  const now = new Date();
-  const hour = now.getHours() + now.getMinutes() / 60;
-  const minute = now.getMinutes() + now.getSeconds() / 60;
-  const second = now.getSeconds() + now.getMilliseconds() / 1000;
-  
-  return { hour: hour, minute: minute, second: second };
-}
-
 // 绘制房屋形状
 function drawHouse(){
   houseLayer.selectAll("*").remove(); // 清理旧元素
@@ -49,7 +40,8 @@ function drawHouse(){
     [marginSize + gridSize * 23, marginSize + gridSize * 12],
   ])
   .attr("fill", "black")
-  .attr("stroke", "white");
+  .attr("stroke", "white")
+  .attr("stroke-width", 0.5);
 }
 
 // 绘制刻度
@@ -116,25 +108,28 @@ function drawMinute(){
     .attr("fill", "white")
     .attr("stroke", "black")
     .attr("stroke-width", 0.5);
-
-  minuteLayer
-    .selectAll(".minute-text")
-    .data([getTime().minute])
-    .join("text")
-    .attr("class", "minute-text")
-    .attr("x", (d) =>
-      centerPosX +
-      Math.cos((d * 6 - 90) * (Math.PI / 180)) * timeRadius
-    )
-    .attr("y", (d) =>
-      centerPosY +
-      Math.sin((d * 6 - 90) * (Math.PI / 180)) * timeRadius
-    )
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "central")
-    .attr("font-size", "20px")
-    .attr("fill", "black")
-    .text(d => Math.floor(d));
+  if (checkStatus().isTextShow){
+    minuteLayer
+      .selectAll(".minute-text")
+      .data([getTime().minute])
+      .join("text")
+      .attr("class", "minute-text")
+      .attr("x", (d) =>
+        centerPosX +
+        Math.cos((d * 6 - 90) * (Math.PI / 180)) * timeRadius
+      )
+      .attr("y", (d) =>
+        centerPosY +
+        Math.sin((d * 6 - 90) * (Math.PI / 180)) * timeRadius
+      )
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "central")
+      .attr("font-size", "20px")
+      .attr("fill", "black")
+      .text(d => Math.floor(d));
+  }else{
+    minuteLayer.selectAll(".minute-text").remove();
+  }
 }
 
 function drawHour(){
@@ -155,43 +150,66 @@ function drawHour(){
     .attr("fill", "white")
     .attr("stroke", "black")
     .attr("stroke-width", 0.5);
-    
-  hourLayer
-    .selectAll(".hour-text")
-    .data([getTime().hour])
-    .join("text")
-    .attr("class", "hour-text")
-    .attr("x", (d) =>
-      centerPosX + Math.cos((d * 30 - 90) * (Math.PI / 180)) * timeRadius
-    )
-    .attr("y", (d) =>
-      centerPosY + Math.sin((d * 30 - 90) * (Math.PI / 180)) * timeRadius
-    )
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "central")
-    .attr("font-size", "20px")
-    .attr("fill", "black")
-    .text(d => 
-      { 
-        if(Math.floor(d)>12){
-          return Math.floor(d)-12
-        }else{
-          return Math.floor(d)
+
+  if (checkStatus().isTextShow){
+    hourLayer
+      .selectAll(".hour-text")
+      .data([getTime().hour])
+      .join("text")
+      .attr("class", "hour-text")
+      .attr("x", (d) =>
+        centerPosX + Math.cos((d * 30 - 90) * (Math.PI / 180)) * timeRadius
+      )
+      .attr("y", (d) =>
+        centerPosY + Math.sin((d * 30 - 90) * (Math.PI / 180)) * timeRadius
+      )
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "central")
+      .attr("font-size", "20px")
+      .attr("fill", "black")
+      .text(d => 
+        { 
+          if(Math.floor(d)>12){
+            return Math.floor(d)-12
+          }else{
+            return Math.floor(d)
+          }
         }
-      }
-    ); // 显示小时数字
+      ); // 显示小时数字
+    }else{
+      hourLayer.selectAll(".hour-text").remove()
+    }
 }
 
 
 // 绘制动态更新函数
 function updateClock() {
+
+  setBackground();
+
   drawHouse()
-  drawScales()
-  drawSecond()
+  if (checkStatus().isDay){
+    if (checkStatus().isScalesSecondShow){
+      drawScales()
+      drawSecond()
+    }else{
+      secondLayer.selectAll("*").remove();
+      scalesLayer.selectAll("*").remove();
+    }
+  }else{
+    secondLayer.selectAll("*").remove();
+    scalesLayer.selectAll("*").remove();
+  }
   drawMinute()
   drawHour()
+
+  if (checkStatus().videoIndex == 0){
+    svg.style("opacity", 1);
+  }else{
+    svg.style("opacity", 0);
+  }
 }
 
 // 启动动画
-d3.interval(updateClock, 10);
+d3.interval(updateClock, 1000);
 updateClock();
