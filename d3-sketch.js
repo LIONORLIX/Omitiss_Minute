@@ -48,18 +48,25 @@ function drawHouse(){
 function drawScales(){
   scalesLayer.selectAll("*").remove();
   for (let i = 0; i < 60; i++) {
+
     const angle = i * 6 - 90;
+    const gap = outerRadius - innerRadius
+    const singleProcess = (checkStatus().isMinuteShowProgress*60-i)<=1?(checkStatus().isMinuteShowProgress*60-i):1
     const x1 = centerPosX + Math.cos((angle * Math.PI) / 180) * innerRadius;
     const y1 = centerPosY + Math.sin((angle * Math.PI) / 180) * innerRadius;
-    const x2 = centerPosX + Math.cos((angle * Math.PI) / 180) * outerRadius;
-    const y2 = centerPosY + Math.sin((angle * Math.PI) / 180) * outerRadius;
-  
+    const x2 = centerPosX + Math.cos((angle * Math.PI) / 180) * (outerRadius-gap*(1-singleProcess));
+    const y2 = centerPosY + Math.sin((angle * Math.PI) / 180) * (outerRadius-gap*(1-singleProcess));
+    let opacityTemp = 0;
+    if (i<=checkStatus().isMinuteShowProgress*60 || checkStatus().isMinuteShowProgress == 1){
+      opacityTemp = 1;
+    }
     scalesLayer
       .append("line")
       .attr("x1", x1)
       .attr("y1", y1)
       .attr("x2", x2)
       .attr("y2", y2)
+      .attr("opacity", opacityTemp)
       .attr("stroke", "white")
       .attr("stroke-width", 0.5);
   }
@@ -76,10 +83,10 @@ function drawSecond(){
     .attr("x1", centerPosX)
     .attr("y1", centerPosY)
     .attr("x2", (d) =>
-      centerPosX + Math.cos((d * 6 - 90) * (Math.PI / 180)) * coreSize
+      centerPosX + Math.cos((d * 6 - 90) * (Math.PI / 180)) * coreSize * checkStatus().isMinuteShowProgress 
     )
     .attr("y2", (d) =>
-      centerPosY + Math.sin((d * 6 - 90) * (Math.PI / 180)) * coreSize
+      centerPosY + Math.sin((d * 6 - 90) * (Math.PI / 180)) * coreSize * checkStatus().isMinuteShowProgress
     )
     .attr("stroke", "white")
     .attr("stroke-width", 0.5);
@@ -108,7 +115,7 @@ function drawMinute(){
     .attr("fill", "white")
     .attr("stroke", "black")
     .attr("stroke-width", 0.5);
-  if (checkStatus().isTextShow){
+
     minuteLayer
       .selectAll(".minute-text")
       .data([getTime().minute])
@@ -126,10 +133,11 @@ function drawMinute(){
       .attr("alignment-baseline", "central")
       .attr("font-size", "20px")
       .attr("fill", "black")
+      .attr("opacity", checkStatus().isTextShowProgress)
       .text(d => Math.floor(d));
-  }else{
-    minuteLayer.selectAll(".minute-text").remove();
-  }
+  // }else{
+  //   minuteLayer.selectAll(".minute-text").remove();
+  // }
 }
 
 function drawHour(){
@@ -151,36 +159,34 @@ function drawHour(){
     .attr("stroke", "black")
     .attr("stroke-width", 0.5);
 
-  if (checkStatus().isTextShow){
-    hourLayer
-      .selectAll(".hour-text")
-      .data([getTime().hour])
-      .join("text")
-      .attr("class", "hour-text")
-      .attr("x", (d) =>
-        centerPosX + Math.cos((d * 30 - 90) * (Math.PI / 180)) * timeRadius
-      )
-      .attr("y", (d) =>
-        centerPosY + Math.sin((d * 30 - 90) * (Math.PI / 180)) * timeRadius
-      )
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "central")
-      .attr("font-size", "20px")
-      .attr("fill", "black")
-      .text(d => 
-        { 
-          if(Math.floor(d)==0){
-            return 12
-          }else if(Math.floor(d)>12){
-            return Math.floor(d)-12
-          }else{
-            return Math.floor(d)
-          }
+  hourLayer
+    .selectAll(".hour-text")
+    
+    .data([getTime().hour])
+    .join("text")
+    .attr("class", "hour-text")
+    .attr("x", (d) =>
+      centerPosX + Math.cos((d * 30 - 90) * (Math.PI / 180)) * timeRadius
+    )
+    .attr("y", (d) =>
+      centerPosY + Math.sin((d * 30 - 90) * (Math.PI / 180)) * timeRadius
+    )
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "central")
+    .attr("font-size", "20px")
+    .attr("fill", "black")
+    .attr("opacity", checkStatus().isTextShowProgress)
+    .text(d => 
+      { 
+        if(Math.floor(d)==0){
+          return 12
+        }else if(Math.floor(d)>12){
+          return Math.floor(d)-12
+        }else{
+          return Math.floor(d)
         }
-      ); // 显示小时数字
-    }else{
-      hourLayer.selectAll(".hour-text").remove()
-    }
+      }
+    ); // 显示小时数字
 }
 
 

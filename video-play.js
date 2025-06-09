@@ -1,4 +1,6 @@
 function setBackground(){
+    // 添加transition样式
+    document.body.style.transition = 'background-color 2s';
     document.body.style.backgroundColor = checkStatus().isDay ? '#ffffff' : '#000000';
 }
 
