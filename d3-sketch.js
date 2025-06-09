@@ -213,5 +213,5 @@ function updateClock() {
 }
 
 // 启动动画
-d3.interval(updateClock, 1000);
+d3.interval(updateClock, 16);  // 改为16ms，约60fps
 updateClock();

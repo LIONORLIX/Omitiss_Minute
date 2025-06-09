@@ -1,11 +1,20 @@
+let isDevMode = true;
+let baseTime = new Date('2024-05-29T07:09:55');
+let startTime = new Date();
+let testSpeed = 50;
+
 function getTime(){
-    const now = new Date();
-    const hour = now.getHours() + now.getMinutes() / 60;
-    const minute = now.getMinutes() + now.getSeconds() / 60;
-    const second = now.getSeconds() + now.getMilliseconds() / 1000;
-    
+    let now = new Date();
+    if (isDevMode){
+        // 计算从开始到现在经过的毫秒数
+        let elapsedMs = (now.getTime() - startTime.getTime())*testSpeed;
+        now = new Date(baseTime.getTime() + elapsedMs);
+    }
+    let hour = now.getHours() + now.getMinutes() / 60;
+    let minute = now.getMinutes() + now.getSeconds() / 60;
+    let second = now.getSeconds() + now.getMilliseconds() / 1000;
     return { hour: hour, minute: minute, second: second };
-  }
+}
 
 function checkStatus(){
     let isScalesSecondShow = false;
