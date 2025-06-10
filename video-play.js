@@ -20,7 +20,6 @@ function setVideoPlay(){
     const videoPath = `./media/test.mov`; 
     
     if (!videoElement) {
-        
         videoElement = document.createElement('video');
         videoElement.style.position = 'fixed';
         videoElement.style.top = '0';
@@ -32,18 +31,20 @@ function setVideoPlay(){
         videoElement.muted = true;
         videoElement.loop = true;
         videoContainer.appendChild(videoElement);
-    }
-    
-    if (videoElement.src !== videoPath) {
+        
+        // 只在创建新视频元素时设置src和播放
         videoElement.src = videoPath;
-        videoElement.play();
+        videoElement.play().catch(error => {
+            console.log('视频播放失败:', error);
+        });
     }
 }
 
 function init() {
     setVideoPlay();
+    // 100ms检查一次状态
     setInterval(() => {
         setVideoPlay();
-    }, 15);
+    }, 100);
 }
 document.addEventListener('DOMContentLoaded', init);

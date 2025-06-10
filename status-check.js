@@ -1,7 +1,7 @@
 // 开发模式，如果为true，则根据baseTime和testSpeed计算时间
 // 如果为false，则使用当前时间
 let isDevMode = true;
-let baseTime = new Date('2025-05-29T06:59:57');
+let baseTime = new Date('2025-05-29T09:18:57');
 let startTime = new Date();
 let testSpeed = 1;
 
