@@ -3,6 +3,7 @@ const coreSize = 600;
 const marginSize = 50;
 const width = coreSize + marginSize * 2;
 const height = coreSize + marginSize * 2;
+const strokeWidth = 1;
 
 const gridSize = coreSize / 24;
 const centerPosX = marginSize + gridSize * 12;
@@ -41,7 +42,7 @@ function drawHouse(){
   ])
   .attr("fill", "black")
   .attr("stroke", "white")
-  .attr("stroke-width", 0.5);
+  .attr("stroke-width", strokeWidth);
 }
 
 // 绘制刻度
@@ -51,13 +52,16 @@ function drawScales(){
 
     const angle = i * 6 - 90;
     const gap = outerRadius - innerRadius
-    const singleProcess = (checkStatus().isMinuteShowProgress*60-i)<=1?(checkStatus().isMinuteShowProgress*60-i):1
+    const singleProcess = (checkStatus().isScaleShowProgress*60-i) <= 1 ? (checkStatus().isScaleShowProgress*60-i) : 1
     const x1 = centerPosX + Math.cos((angle * Math.PI) / 180) * innerRadius;
     const y1 = centerPosY + Math.sin((angle * Math.PI) / 180) * innerRadius;
+    // 单个刻度的无极变换
     const x2 = centerPosX + Math.cos((angle * Math.PI) / 180) * (outerRadius-gap*(1-singleProcess));
     const y2 = centerPosY + Math.sin((angle * Math.PI) / 180) * (outerRadius-gap*(1-singleProcess));
+    // const x2 = centerPosX + Math.cos((angle * Math.PI) / 180) * outerRadius;
+    // const y2 = centerPosY + Math.sin((angle * Math.PI) / 180) * outerRadius;
     let opacityTemp = 0;
-    if (i<=checkStatus().isMinuteShowProgress*60 || checkStatus().isMinuteShowProgress == 1){
+    if (i<=checkStatus().isScaleShowProgress*60 || checkStatus().isScaleShowProgress == 1){
       opacityTemp = 1;
     }
     scalesLayer
@@ -68,7 +72,7 @@ function drawScales(){
       .attr("y2", y2)
       .attr("opacity", opacityTemp)
       .attr("stroke", "white")
-      .attr("stroke-width", 0.5);
+      .attr("stroke-width", strokeWidth);
   }
 }
 
@@ -89,7 +93,7 @@ function drawSecond(){
       centerPosY + Math.sin((d * 6 - 90) * (Math.PI / 180)) * coreSize * checkStatus().isMinuteShowProgress
     )
     .attr("stroke", "white")
-    .attr("stroke-width", 0.5);
+    .attr("stroke-width", strokeWidth);
 }
 
 function drawMinute(){
@@ -114,7 +118,8 @@ function drawMinute(){
     )
     .attr("fill", "white")
     .attr("stroke", "black")
-    .attr("stroke-width", 0.5);
+    // .attr("style", "mix-blend-mode: difference;") // 设置重叠反色
+    .attr("stroke-width", strokeWidth);
 
     minuteLayer
       .selectAll(".minute-text")
@@ -157,7 +162,8 @@ function drawHour(){
     .attr("r", minRadius)
     .attr("fill", "white")
     .attr("stroke", "black")
-    .attr("stroke-width", 0.5);
+    // .attr("style", "mix-blend-mode: difference;") // 设置重叠反色
+    .attr("stroke-width", strokeWidth);
 
   hourLayer
     .selectAll(".hour-text")

@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "OmitissFont";
+  src: url("./media/fonts/OMITISS102620241222-40.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -11,15 +18,35 @@ html, body {
   height: 100vh;
 }
 
+#title-time-container {
+  position: fixed;
+  top: 3vh;
+  left: 3vh;
+  color: black;
+  font-family: "OmitissFont";
+  font-size: 2.2rem;
+  font-weight: 200;
+  line-height: 1;
+}
+
+.title-content {
+  display: inline-block;
+  
+}
+
+#video-container {
+  z-index: 999;
+}
+
 .hour-text {
-  font-family: "Reddit Sans Condensed", serif;
+  font-family: "OmitissFont";
   font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;
 }
 
 .minute-text {
-  font-family: "Reddit Sans Condensed", serif;
+  font-family: "OmitissFont";
   font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;
